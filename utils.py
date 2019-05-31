@@ -7,7 +7,7 @@ import gensim
 import data_helpers
 
 def customize_embeddings_from_pretrained_googlenews_w2v(pretrained_embedding_fpath, dataset_filepath):
-    x, y, vocabulary, vocabulary_inv_list = data_helpers.load_data(dataset_filepath)
+    x, y, vocabulary, vocabulary_inv_list = data_helpers.load_data(dataset_filepath, options=1, header=True)
     vocabulary_inv = {rank: word for rank, word in enumerate(vocabulary_inv_list)}
     embedding_dim = 300
 
