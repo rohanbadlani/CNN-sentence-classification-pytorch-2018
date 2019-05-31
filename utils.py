@@ -6,8 +6,8 @@ import pickle
 import gensim
 import data_helpers
 
-def customize_embeddings_from_pretrained_googlenews_w2v(pretrained_embedding_fpath):
-    x, y, vocabulary, vocabulary_inv_list = data_helpers.load_data()
+def customize_embeddings_from_pretrained_googlenews_w2v(pretrained_embedding_fpath, dataset_filepath):
+    x, y, vocabulary, vocabulary_inv_list = data_helpers.load_data(dataset_filepath)
     vocabulary_inv = {rank: word for rank, word in enumerate(vocabulary_inv_list)}
     embedding_dim = 300
 
@@ -39,15 +39,18 @@ def customize_embeddings_from_pretrained_googlenews_w2v(pretrained_embedding_fpa
         f.write("\n".join(words))
 
 def main():
-    if len(sys.argv) == 1:
-        path_to_googlenews_vectors = os.path.expanduser("~/.keras/models/GoogleNews-vectors-negative300.bin")
+    if len(sys.argv) != 3:
+        print ("Error in arguments...Please provide word2vecs and the dataset_filepath")
+        sys.exit(-1)
+        #path_to_googlenews_vectors = os.path.expanduser("~/.keras/models/GoogleNews-vectors-negative300.bin")
     else:
         path_to_googlenews_vectors = sys.argv[1]
+        dataset_filepath = sys.argv[2]
         if not os.path.exists(path_to_googlenews_vectors):
             print('Sorry, file "{}" does not exist'.format(path_to_googlenews_vectors))
             sys.exit()
     print('Your path to the googlenews vector file is: ', path_to_googlenews_vectors)
-    customize_embeddings_from_pretrained_googlenews_w2v(path_to_googlenews_vectors)
+    customize_embeddings_from_pretrained_googlenews_w2v(path_to_googlenews_vectors, dataset_filepath)
 
 if __name__ == "__main__":
     main()
