@@ -15,6 +15,7 @@ from torch.utils.data import DataLoader, TensorDataset
 from sklearn.model_selection import KFold
 
 import data_helpers
+import argparse
 
 # for obtaining reproducible results
 np.random.seed(0)
@@ -31,15 +32,11 @@ use_pretrained_embeddings = True
 print('MODE      = {}'.format(mode))
 print('EMBEDDING = {}\n'.format("pretrained" if use_pretrained_embeddings else "random"))
 
-X, Y, vocabulary, vocabulary_inv_list = data_helpers.load_data()
+X, Y, vocabulary, vocabulary_inv_list = None, None, None, None
 
-vocab_size = len(vocabulary_inv_list)
-sentence_len = X.shape[1]
-num_classes = int(max(Y)) +1 # added int() to convert np.int64 to int
-
-print('vocab size       = {}'.format(vocab_size))
-print('max sentence len = {}'.format(sentence_len))
-print('num of classes   = {}'.format(num_classes))
+vocab_size = None
+sentence_len = None
+num_classes = None
 
 ConvMethod = "in_channel__is_embedding_dim"
 ConvMethod = "in_channel__is_1"
@@ -205,7 +202,7 @@ def train_test_one_split(cv, train_index, test_index):
     return eval_acc, sentence_vector
 
 
-def do_cnn():
+def do_cnn(filepath):
     cv_folds = 10
     kf = KFold(n_splits=cv_folds, shuffle=True, random_state=0)
     acc_list = []
@@ -226,6 +223,19 @@ def do_cnn():
 
 
 def main():
+    parser = argparse.ArgumentParser(description='word CNN model')
+    parser.add_argument('dataset', help='filepath of the dataset')
+    args = parser.parse_args()
+    X, Y, vocabulary, vocabulary_inv_list = data_helpers.load_data(args.dataset, options=1, header=True)
+
+    vocab_size = len(vocabulary_inv_list)
+    sentence_len = X.shape[1]
+    num_classes = int(max(Y)) +1 # added int() to convert np.int64 to int
+
+    print('vocab size       = {}'.format(vocab_size))
+    print('max sentence len = {}'.format(sentence_len))
+    print('num of classes   = {}'.format(num_classes))
+
     do_cnn()
 
 if __name__ == "__main__":
