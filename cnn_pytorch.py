@@ -202,7 +202,7 @@ def train_test_one_split(cv, train_index, test_index):
     return eval_acc, sentence_vector
 
 
-def do_cnn(filepath):
+def do_cnn():
     cv_folds = 10
     kf = KFold(n_splits=cv_folds, shuffle=True, random_state=0)
     acc_list = []
@@ -226,6 +226,8 @@ def main():
     parser = argparse.ArgumentParser(description='word CNN model')
     parser.add_argument('dataset', help='filepath of the dataset')
     args = parser.parse_args()
+    
+    global X, Y, vocabulary, vocabulary_inv_list, vocab_size, sentence_len, num_classes
     X, Y, vocabulary, vocabulary_inv_list = data_helpers.load_data(args.dataset, options=1, header=True)
 
     vocab_size = len(vocabulary_inv_list)
